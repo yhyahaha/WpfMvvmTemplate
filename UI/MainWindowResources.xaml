@@ -1,0 +1,73 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:UI">
+
+    <Style TargetType="Button">
+        <Setter Property="Width" Value="70"/>
+        <Setter Property="Margin" Value="5,0,0,0"/>
+        <Setter Property="Background" Value="CornflowerBlue"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Height" Value="25"/>
+    </Style>
+    
+    <ControlTemplate x:Key="CrudPanelTemplate">
+        <ControlTemplate.Resources>
+            <Style TargetType="TextBlock">
+                <Setter Property="Width" Value="80"/>
+                <Setter Property="Height" Value="25"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+
+            <Style x:Key="errorMessageStyle" TargetType="ContentControl">
+                <Setter Property="FontSize" Value="12"/>
+                <Setter Property="Foreground" Value="Red"/>
+                <Setter Property="Margin" Value="0,3,0,0"/>
+                <Setter Property="IsTabStop" Value="False"/>
+                <Setter Property="Height" Value="25"/>
+            </Style>
+        </ControlTemplate.Resources>
+
+        <Grid>
+            <Grid.Resources>
+                <local:NullableIntConverter x:Key="nullableConverter"/>
+            </Grid.Resources>
+            
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+
+            <TextBlock Text="氏名" Grid.Column="0" Grid.Row="0"/>
+            <TextBox x:Name="textboxPersonName" Grid.Column="1" Grid.Row="0" VerticalContentAlignment="Center"
+                     Text="{Binding Person.PersonName, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                     Validation.ErrorTemplate="{x:Null}"/>
+            <ContentControl Content="{Binding ElementName=textboxPersonName,Path=(Validation.Errors)[0].ErrorContent, Mode=OneWay}" 
+                            Grid.Column="1" Grid.Row="1" Style="{StaticResource errorMessageStyle}"/>
+
+            <TextBlock Text="年齢" Grid.Column="0" Grid.Row="2"/>
+            <TextBox x:Name="textboxAge" Grid.Column="1" Grid.Row="2" VerticalContentAlignment="Center"
+                     Text="{Binding Person.Age, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource nullableConverter},Mode=TwoWay}" 
+                     Validation.ErrorTemplate="{x:Null}" />
+            <ContentControl Content="{Binding ElementName=textboxAge, Path=(Validation.Errors)[0].ErrorContent, Mode=OneWay}" 
+                            Grid.Column="1" Grid.Row="3" Style="{StaticResource errorMessageStyle}"/>
+
+            <StackPanel Orientation="Horizontal" Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2" HorizontalAlignment="Right">
+                <Button Content="リセット" Command="{Binding ClearItemCommand}"/> 
+                <Button Content="保存" Command="{Binding UpdateItemCommand}"/>
+                <Button Content="削除" Command="{Binding DeleteItemCommand}"/>
+            </StackPanel>
+
+        </Grid>
+    </ControlTemplate>
+
+</ResourceDictionary>
